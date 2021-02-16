@@ -79,14 +79,9 @@ class LinkedList:
         """
         return self.__len
 
-    def __getitem__(self, item: int) -> Any:
+    def _step_by_step(self, item: int) -> Optional['LinkedList.Node']:
         """
-        Метод, возвращающий элемент связного списка по индексу
-
-        :param item: int
-            индекс элемента, который мы хотим вернуть
-        :return:
-
+        Метод, шагающий по списку
         """
         if not isinstance(item, int):
             raise TypeError('Я умею принимать только целые числа')
@@ -98,6 +93,18 @@ class LinkedList:
         for _ in range(item):
             current_node = current_node.next
 
+        return current_node
+
+    def __getitem__(self, item: int) -> Any:
+        """
+        Метод, возвращающий элемент связного списка по индексу
+
+        :param item: int
+            индекс элемента, который мы хотим вернуть
+        :return:
+
+        """
+        current_node = self._step_by_step(item)
         return current_node.value
 
     def __setitem__(self, key: int, value: Any) -> None:
@@ -111,16 +118,7 @@ class LinkedList:
         :return:
             None
         """
-        if not isinstance(key, int):
-            raise TypeError('Я умею принимать только целые числа')
-
-        if not 0 <= key < self.__len:
-            raise IndexError()
-
-        current_node = self.head
-        for _ in range(key):
-            current_node = current_node.next
-
+        current_node = self._step_by_step(key)
         current_node.value = value
 
     def append(self, value: Any) -> None:
@@ -208,12 +206,8 @@ class LinkedList:
             индекс заданного значения
         """
         current_node = self.head
-        if current_node.value == value:
-            return 0
-
-        for i in range(1, self.__len):
-            current_node = current_node.next
-            if current_node.value == value:
+        for i, value_ in enumerate(self):
+            if value == value_:
                 return i
         else:
             raise ValueError(f'{value} is not in list')
@@ -282,5 +276,6 @@ if __name__ == '__main__':
     print(ll)
     ll.sort()
     print(ll)
+    print(ll.index(122))
     ll.clear()
     print(ll)
